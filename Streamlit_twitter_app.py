@@ -24,9 +24,6 @@ from datetime import date
 from datetime import timedelta
 import re
 
-#Plotly
-import plotly.graph_objects as go
-from st_aggrid import AgGrid
 
 
 #Keys to fetch twitter data
