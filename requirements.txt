@@ -7,3 +7,4 @@ streamlit_webrtc==0.31.1
 tweepy
 bokeh==2.2.2
 snscrape==0.4.3.20220106
+tqdm==4.64.1
