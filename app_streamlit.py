@@ -203,6 +203,7 @@ df1["tweets"] = df1["tweets"].apply(social_media_functions.remove_mentions)
 
 #df1["month"]=df1["time"].apply(lambda x: datetime.datetime.strptime(x, "%Y-%m-%d %H:%M:%S").strftime("%B"))
 #df1["year"]=df1["time"].apply(lambda x: datetime.datetime.strptime(x, "%Y-%m-%d %H:%M:%S").strftime("%Y"))
+df1["time"]=pd.to_datetime(df1["time"], format="%Y-%m-%d %H:%M:%S")
 df1["month"]=df1["time"].dt.month
 df1["year"]=df1["time"].dt.year
 df1["date"]=df1["time"].dt.date
