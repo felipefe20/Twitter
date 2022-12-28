@@ -1,6 +1,7 @@
         
 def remove_stop_words(table, column, lematize=False):
     import nltk
+    nltk.download()
     nltk.download("stopwords")
     from nltk.corpus import stopwords
     nltk.download("punkt")
@@ -26,7 +27,8 @@ def remove_stop_words(table, column, lematize=False):
     
 
 def lematize_words(table):
-
+    import nltk
+    nltk.download('wordnet')    
     from nltk.stem import WordNetLemmatizer
     
     WNlemma = WordNetLemmatizer()
