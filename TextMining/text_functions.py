@@ -1,9 +1,9 @@
         
 def remove_stop_words(table, column, lematize=False):
     import nltk
-    nltk.download(‘stopwords’)
+    nltk.download("stopwords")
     from nltk.corpus import stopwords
-    nltk.download(‘punkt’)
+    nltk.download("punkt")
     from nltk.tokenize import word_tokenize
     import regex as re
 
