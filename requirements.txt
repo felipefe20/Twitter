@@ -8,3 +8,4 @@ tweepy
 bokeh==2.2.2
 snscrape==0.4.3.20220106
 tqdm==4.64.1
+regex==2022.9.13
