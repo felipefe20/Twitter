@@ -366,10 +366,10 @@ for index, row in df1[:10].iterrows():
 #st.write(df2)
 #pr = df2.profile_report(
 #        correlations={"pearson": {"calculate": True},
-                                "spearman": {"calculate": False},
-                                "kendall": {"calculate": False},
-                                "phi_k": {"calculate": False}
-                                }
+#                                "spearman": {"calculate": False},
+#                                "kendall": {"calculate": False},
+#                                "phi_k": {"calculate": False}
+#                                }
             )
 #st.subheader("Descriptive analytics")
 #st_profile_report(pr)
