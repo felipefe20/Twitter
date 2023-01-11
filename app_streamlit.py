@@ -370,6 +370,6 @@ for index, row in df1[:10].iterrows():
 #                                "kendall": {"calculate": False},
 #                                "phi_k": {"calculate": False}
 #                                }
-            )
+#            )
 #st.subheader("Descriptive analytics")
 #st_profile_report(pr)
