@@ -1,14 +1,15 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-#from streamlit_autorefresh import st_autorefresh
+from streamlit_autorefresh import st_autorefresh
 from math import floor
 import snscrape.modules.twitter as sntwitter
 import pandas as pd
 from tqdm import tqdm
 import datetime
 #from datetime import datetime, timedelta
-st. set_page_config(layout="wide")
+st.set_page_config(layout="wide")
+
 def search_twitter(all_words=False, exact_phrase="", any_words="", exclude_words="",hashtags="",
                     from_account="", to_account="", mention_account="",
                     exclude_replies=False, exclude_retweets=False, min_replies=False, min_likes=False, min_retweets=False,
@@ -166,7 +167,19 @@ df_tweets = get_twitter_df(query_str)
 
 st.write(df_tweets)
 #data=pd.read_csv(r"C:\Users\fernandeztovar.7\OneDrive - Teleperformance\Desktop\Projects team\Social Listening\webapp_sociallistening\data\final_df_star.csv")
-st.subheader('Number of tweets')
+@st.cache
+def convert_df(df):
+    # IMPORTANT: Cache the conversion to prevent computation on every rerun
+    return df.to_csv().encode('utf-8')
+
+csv = convert_df(df_tweets)
+
+st.download_button(
+    label="Download data as CSV",
+    data=csv,
+    file_name='large_df.csv',
+    mime='text/csv',
+)
 count_tweets=str(df_tweets["id_tweet"].count())
 st.metric(label="Number of tweets", value=count_tweets)
 
@@ -203,13 +216,13 @@ df1["tweets"] = df1["tweets"].apply(social_media_functions.remove_mentions)
 
 #df1["month"]=df1["time"].apply(lambda x: datetime.datetime.strptime(x, "%Y-%m-%d %H:%M:%S").strftime("%B"))
 #df1["year"]=df1["time"].apply(lambda x: datetime.datetime.strptime(x, "%Y-%m-%d %H:%M:%S").strftime("%Y"))
-df1["time"]=pd.to_datetime(df1["time"], format="%Y-%m-%d %H:%M:%S")
 df1["month"]=df1["time"].dt.month
 df1["year"]=df1["time"].dt.year
 df1["date"]=df1["time"].dt.date
+df1["Hour"]=df1["time"].dt.hour
 
-words = text_functions.create_freq_words_df(df1, columns_to_group = ["year", "month","Polarity_name"], remove_sw=True, lema=True, text_col="tweets")
-bigrams = text_functions.create_bigram_df(df1, columns_to_group = ["year", "month","Polarity_name"], remove_sw=True, lema=True, text_col="tweets")
+words = text_functions.create_freq_words_df(df1, columns_to_group = ["year", "month","date","id_tweet","Polarity_name"], remove_sw=True, lema=True, text_col="tweets")
+bigrams = text_functions.create_bigram_df(df1, columns_to_group = ["year", "month","date","id_tweet","Polarity_name"], remove_sw=True, lema=True, text_col="tweets")
 bigrams.reset_index(inplace=True)
 
 words.reset_index(inplace=True)
@@ -234,13 +247,129 @@ col4.write("Hashtags frequency")
 col4.write(hashtags_freq)
 
 
+
+
+#df2=df1.groupby("date").mean().reset_index()
+
+
+#dropdown of hashtags, mentions, To, From
+
+
+#Plots
+
+#Tweets and avg polarity by day
+
+#trying with month as well in the same fig
+
+
+#Select user and see his tweets (% participation)
+
+
+
+#plots Section
+
+
 import plotly.express as px
 
-df2=df1.groupby("date").mean().reset_index()
+a, b, c, d = st.columns([1.5, 1.5, 1.5, 1.5])
+
+x_axis_variable=a.selectbox("x axis variable",["date","month"])
+
+user_filter=b.multiselect("user filter",df1["user"].unique())
+
+#mention_filter=c.multiselect("mention filter",mentions_freq["mentions"].unique())
+
+#To_filter=d.selectbox("x axis variable",hashtags_freq["hashtags"].unique())
+
+if len(user_filter)!=0:
+
+    df1=df1[df1["user"].isin(user_filter)]
+
+
+df2=df1.groupby(x_axis_variable).mean().reset_index()
+df3=df1.groupby(x_axis_variable).count().reset_index()
+
+#st.write(f"Average sentiment by {x_axis_variable}")
 
 #st.write(df2)
-fig=px.line(df2, x="date", y="Polarity", title="Average sentiment by day")
+#st.write(df3)
+#fig=px.bar(df2, x=x_axis_variable, y="Polarity", title=f"Polarity vs {x_axis_variable}")
+#st.write(fig)
 
-#st.write("Average sentiment by day")
-st.write(fig)
+fig1=px.line(df2, x=x_axis_variable, y="Polarity", title=f"Average polarity by {x_axis_variable}")
 
+fig2=px.bar(df3,x=x_axis_variable, y="Polarity", title=f"#tweets by {x_axis_variable}")
+
+a, b = st.columns([1.5, 1.5])
+
+a.write(fig1)
+
+b.write(fig2)
+
+#freq by word by day and month
+
+ids_tweets=df1["id_tweet"].unique()
+
+words=words.sort_values(by="freq",ascending=False)
+
+words=words[words["id_tweet"].isin(ids_tweets)]
+
+fig1=px.bar( words[:20], x="word", y="freq", color=x_axis_variable, title=f"Word frequency by {x_axis_variable}",
+        barmode="group")
+
+#st.write(fig)
+
+
+#freq by bigram by day and month
+
+bigrams=bigrams.sort_values(by="freq",ascending=False)
+bigrams=bigrams[bigrams["id_tweet"].isin(ids_tweets)]
+fig2=px.bar( bigrams[:20], x="bigram", y="freq", color=x_axis_variable, title=f"Bigram frequency by {x_axis_variable}",
+        barmode="group")
+
+#st.write(fig)
+
+a, b = st.columns([1.5, 1.5])
+
+a.write(fig1)
+
+b.write(fig2)
+#Display tweets
+
+st.subheader("Sample of tweets")
+
+def display_dict(dict):
+    for k, v in dict.items():
+        a, b = st.columns([1, 4])
+        a.write(f"**{k}:**")
+        b.write(v)
+
+def display_tweet(row):
+    parsed_tweet = {
+        "author": row["user"],
+        "created_at": row["time"],
+        "url": row["link"],
+        "text": row["tweets"],
+        "Polarity name":row["Polarity_name"]
+    }
+    display_dict(parsed_tweet)
+
+for index, row in df1[:10].iterrows():
+    display_tweet(row.to_dict())
+
+
+
+#from streamlit_pandas_profiling import st_profile_report
+#import pandas_profiling
+
+#df2=df1.drop(["id_tweet","tweets","link","language","nick_name","SW removed","SW removed and Lematized"], axis=1)
+#st.write(df2)
+#pr = df2.profile_report(
+#        correlations={"pearson": {"calculate": True},
+                                "spearman": {"calculate": False},
+                                "kendall": {"calculate": False},
+                                "phi_k": {"calculate": False}
+                                }
+            )
+#st.subheader("Descriptive analytics")
+#st_profile_report(pr)
