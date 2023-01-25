@@ -71,7 +71,7 @@ def get_twitter_df(query):
     
     count=1
 
-    for tweet in tqdm(sntwitter.TwitterSearchScraper(query, top=True).get_items()): 
+    for tweet in sntwitter.TwitterSearchScraper(query, top=True).get_items(): 
         id_tweet.append(tweet.id)
         nick_name.append(tweet.user.displayname)
         user.append(tweet.user.username)
