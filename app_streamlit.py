@@ -75,7 +75,7 @@ def get_twitter_df(query):
         id_tweet.append(tweet.id)
         nick_name.append(tweet.user.displayname)
         user.append(tweet.user.username)
-        tweets.append(tweet.content)
+        tweets.append(tweet.rawContent)
         time.append(tweet.date.replace(tzinfo=None))
         likes.append(tweet.likeCount)
         retweets.append(tweet.retweetCount)
@@ -166,7 +166,7 @@ st.write(query_str)
 df_tweets = get_twitter_df(query_str)
 
 st.write(df_tweets)
-st.write(df_tweets.info())
+
 #data=pd.read_csv(r"C:\Users\fernandeztovar.7\OneDrive - Teleperformance\Desktop\Projects team\Social Listening\webapp_sociallistening\data\final_df_star.csv")
 @st.cache
 def convert_df(df):
@@ -217,6 +217,7 @@ df1["tweets"] = df1["tweets"].apply(social_media_functions.remove_mentions)
 
 #df1["month"]=df1["time"].apply(lambda x: datetime.datetime.strptime(x, "%Y-%m-%d %H:%M:%S").strftime("%B"))
 #df1["year"]=df1["time"].apply(lambda x: datetime.datetime.strptime(x, "%Y-%m-%d %H:%M:%S").strftime("%Y"))
+st.write(df1["time"].type())
 df1["month"]=df1["time"].dt.month
 df1["year"]=df1["time"].dt.year
 df1["date"]=df1["time"].dt.date
