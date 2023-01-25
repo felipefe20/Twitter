@@ -1,7 +1,7 @@
         
 def remove_stop_words(table, column, lematize=False):
     import nltk
-    nltk.download()
+    #nltk.download()
     nltk.download("stopwords")
     from nltk.corpus import stopwords
     nltk.download("punkt")
