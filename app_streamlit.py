@@ -166,6 +166,7 @@ st.write(query_str)
 df_tweets = get_twitter_df(query_str)
 
 st.write(df_tweets)
+st.write(df_tweets.info())
 #data=pd.read_csv(r"C:\Users\fernandeztovar.7\OneDrive - Teleperformance\Desktop\Projects team\Social Listening\webapp_sociallistening\data\final_df_star.csv")
 @st.cache
 def convert_df(df):
