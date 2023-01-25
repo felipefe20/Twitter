@@ -10,3 +10,4 @@ snscrape==V0.5.0.20230113
 tqdm==4.64.1
 regex==2022.9.13
 textblob==0.17.1
+plotly==5.10.0
